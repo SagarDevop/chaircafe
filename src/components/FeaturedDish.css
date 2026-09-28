@@ -1,0 +1,121 @@
+/* Featured Dish Dark Panel Component CSS */
+.featured-dish-section {
+  background-color: var(--bg-cream);
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+.featured-dish-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  box-shadow: var(--shadow-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  .featured-dish-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Image Wrapper */
+.featured-dish-image-wrapper {
+  position: relative;
+  min-height: 480px;
+}
+
+.featured-dish-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background-color: var(--accent-red);
+  color: var(--white);
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Right Dark Panel */
+.featured-dish-dark-panel {
+  background-color: var(--bg-charcoal);
+  color: var(--text-light);
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 576px) {
+  .featured-dish-dark-panel {
+    padding: 36px 24px;
+  }
+}
+
+.eyebrow-light {
+  color: var(--accent-red);
+}
+
+.dark-panel-title {
+  font-size: 34px;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.dark-panel-subtitle {
+  font-size: 13px;
+  color: var(--text-light-muted);
+  margin-bottom: 32px;
+}
+
+/* Items List */
+.speciality-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.speciality-item-row {
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+}
+
+.speciality-item-name {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--white);
+}
+
+.speciality-item-price {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--accent-red);
+}
+
+/* Actions */
+.dark-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.dark-panel-note {
+  font-size: 12px;
+  color: var(--text-light-muted);
+  letter-spacing: 0.5px;
+}

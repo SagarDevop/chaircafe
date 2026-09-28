@@ -1,0 +1,59 @@
+/* Mobile Bottom Navigation Bar CSS */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background-color: var(--bg-charcoal);
+  border-top: 1px solid var(--border-dark-subtle);
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 880px) {
+  .mobile-bottom-nav {
+    display: block;
+  }
+}
+
+.bottom-nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-light-muted);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: var(--transition-smooth);
+  flex: 1;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item.active {
+  color: var(--white);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+  color: var(--accent-red);
+  transform: translateY(-1px);
+}
+
+.bottom-nav-icon {
+  transition: transform 0.2s ease;
+}

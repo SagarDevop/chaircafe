@@ -1,0 +1,131 @@
+/* Services Component CSS */
+.services-section {
+  position: relative;
+  background-color: var(--bg-cream);
+  overflow: hidden;
+}
+
+.services-watermark {
+  bottom: 20px;
+  left: 20px;
+}
+
+.services-container {
+  position: relative;
+  z-index: 2;
+}
+
+.services-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+.services-title {
+  font-size: clamp(30px, 3.5vw, 42px);
+  line-height: 1.18;
+  color: var(--text-main);
+}
+
+/* Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 992px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+/* Service Card */
+.service-card {
+  background-color: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.03);
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-subtle);
+}
+
+.featured-service-card {
+  border-color: var(--accent-red);
+}
+
+.service-card-image-wrapper {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.service-img {
+  transition: transform 0.8s ease;
+}
+
+.service-card:hover .service-img {
+  transform: scale(1.04);
+}
+
+.service-subtitle {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background-color: rgba(23, 23, 23, 0.85);
+  backdrop-filter: blur(4px);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  padding: 6px 12px;
+  border-radius: 2px;
+}
+
+.service-card-body {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.service-card-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.service-card-desc {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.service-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.service-arrow {
+  font-size: 18px;
+  color: var(--accent-red);
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-arrow {
+  transform: translateX(6px);
+}
