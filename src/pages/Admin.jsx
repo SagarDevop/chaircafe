@@ -280,19 +280,29 @@ const Admin = () => {
                   </div>
 
                   {/* Generated QR Code Graphic */}
-                  <div className="qr-image-wrapper">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(customHost + '/order?table=' + selectedQRTable.name.replace('Table ', ''))}`}
-                      alt={`${selectedQRTable.name} QR Code`}
-                      className="qr-img"
-                    />
-                    <div className="qr-overlay-logo">FC</div>
-                  </div>
+                  {(() => {
+                    const formattedHost = customHost.startsWith('http://') || customHost.startsWith('https://') 
+                      ? customHost 
+                      : `https://${customHost}`;
+                    const targetQrUrl = `${formattedHost}/order?table=${selectedQRTable.name.replace('Table ', '')}`;
+                    return (
+                      <>
+                        <div className="qr-image-wrapper">
+                          <img
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(targetQrUrl)}`}
+                            alt={`${selectedQRTable.name} QR Code`}
+                            className="qr-img"
+                          />
+                          <div className="qr-overlay-logo">FC</div>
+                        </div>
 
-                  <div className="qr-target-url">
-                    <span className="url-label">ENCODED QR URL:</span>
-                    <code className="url-code">{customHost}/order?table={selectedQRTable.name.replace('Table ', '')}</code>
-                  </div>
+                        <div className="qr-target-url">
+                          <span className="url-label">ENCODED QR URL (CLICKABLE):</span>
+                          <code className="url-code">{targetQrUrl}</code>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <div className="qr-actions">
                     <Link
