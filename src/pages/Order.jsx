@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { menuItems, menuCategories } from '../data/menuData';
-import { ShoppingBag, Plus, Minus, CheckCircle, ArrowLeft, Utensils } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, CheckCircle, ArrowLeft, Utensils, Search, Sparkles } from 'lucide-react';
 import './Order.css';
 
 const Order = () => {
   const [searchParams] = useSearchParams();
-  const tableParam = searchParams.get('table') || '07';
+  const rawTable = searchParams.get('table') || '01';
+  const tableParam = rawTable.replace(/[^0-9a-zA-Z]/g, '') || '01';
 
   const [activeCategory, setActiveCategory] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState([]);
   const [orderSubmitted, setOrderSubmitted] = useState(false);
   const [lastOrderDetails, setLastOrderDetails] = useState(null);
 
-  const filteredItems = activeCategory === 'ALL'
-    ? menuItems
-    : menuItems.filter(item => item.category === activeCategory);
+  const filteredItems = menuItems.filter(item => {
+    const matchesCat = activeCategory === 'ALL' || item.category === activeCategory;
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   const getItemQuantity = (id) => {
     const item = cart.find(c => c.id === id);
@@ -35,9 +40,9 @@ const Order = () => {
 
   const removeFromCart = (id) => {
     setCart(prev => {
-      const existing = prev.find(c => c.id === id);
+      const existing = prev.find(c => c.id === item.id);
       if (existing && existing.quantity > 1) {
-        return prev.map(c => c.id === id ? { ...c, quantity: c.quantity - 1 } : c);
+        return prev.map(c => c.id === item.id ? { ...c, quantity: c.quantity - 1 } : c);
       } else {
         return prev.filter(c => c.id !== id);
       }
@@ -60,7 +65,7 @@ const Order = () => {
       date: new Date().toLocaleDateString()
     };
 
-    // Save order into localStorage for live admin sync
+    // Save order into localStorage for live staff admin sync
     const existingOrders = JSON.parse(localStorage.getItem('fourchairs_orders') || '[]');
     localStorage.setItem('fourchairs_orders', JSON.stringify([newOrder, ...existingOrders]));
 
@@ -70,141 +75,160 @@ const Order = () => {
   };
 
   return (
-    <div className="order-page-wrapper">
-      {/* Table Header */}
-      <header className="order-header">
-        <div className="order-header-container">
-          <Link to="/" className="back-link">
-            <ArrowLeft size={18} /> Public Showcase
-          </Link>
-          
-          <div className="table-badge">
-            <Utensils size={14} />
-            <span>TABLE {tableParam.padStart(2, '0')}</span>
+    <div className="mobile-order-screen">
+      <div className="mobile-order-container">
+        {/* Table Top Sticky Bar */}
+        <header className="mobile-order-header">
+          <div className="mobile-order-header-content">
+            <Link to="/" className="mobile-back-btn" title="Return to Four Chairs Home">
+              <ArrowLeft size={20} />
+            </Link>
+
+            <div className="mobile-table-tag">
+              <Utensils size={14} />
+              <span>TABLE {tableParam.toString().padStart(2, '0')}</span>
+            </div>
+
+            <Link to="/admin" className="mobile-staff-btn">
+              Staff
+            </Link>
           </div>
+        </header>
 
-          <Link to="/admin" className="admin-quick-tag">
-            Staff View
-          </Link>
-        </div>
-      </header>
+        {/* Main Content View */}
+        <main className="mobile-order-body">
+          {orderSubmitted ? (
+            <div className="mobile-success-view animate-fade-in">
+              <CheckCircle size={54} className="mobile-success-icon" />
+              <span className="order-badge">ORDER #{lastOrderDetails?.id}</span>
+              <h2 className="mobile-success-title">Order Received!</h2>
+              <p className="mobile-success-text">
+                Your order for <strong>Table {tableParam}</strong> has been transmitted directly to the Four Chairs bar &amp; kitchen team.
+              </p>
 
-      {/* Main Container */}
-      <main className="order-main container">
-        {orderSubmitted ? (
-          <div className="order-success-card animate-fade-in">
-            <CheckCircle size={56} className="success-icon" />
-            <span className="order-num-badge">ORDER #{lastOrderDetails?.id}</span>
-            <h2 className="success-title">Order Sent to Kitchen</h2>
-            <p className="success-desc">
-              Your order for <strong>Table {tableParam}</strong> has been transmitted directly to the Four Chairs kitchen team.
-            </p>
-
-            <div className="order-summary-box">
-              <h4>Order Summary</h4>
-              <ul>
-                {lastOrderDetails?.items.map((item) => (
-                  <li key={item.id}>
-                    <span>{item.quantity}x {item.name}</span>
-                    <span>₹{item.numericPrice * item.quantity}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="summary-total">
-                <span>Total Amount:</span>
-                <span>₹{lastOrderDetails?.total}</span>
-              </div>
-            </div>
-
-            <div className="order-status-pill">
-              <span>Status:</span>
-              <strong className="status-pending">PENDING KITCHEN ACCEPTANCE</strong>
-            </div>
-
-            <button
-              className="btn btn-primary margin-top-20"
-              onClick={() => setOrderSubmitted(false)}
-            >
-              ORDER MORE ITEMS
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Category Navigation */}
-            <div className="order-cat-bar">
-              {menuCategories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className={`order-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => setActiveCategory(cat.id)}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-
-            {/* Menu List */}
-            <div className="order-items-grid">
-              {filteredItems.map((item) => {
-                const qty = getItemQuantity(item.id);
-                return (
-                  <div key={item.id} className="order-item-card">
-                    <div className="order-item-img-wrapper">
-                      <img src={item.image} alt={item.name} className="img-cover" />
-                    </div>
-
-                    <div className="order-item-details">
-                      <div className="order-item-top">
-                        <h3 className="order-item-name">{item.name}</h3>
-                        <span className="order-item-price">{item.price}</span>
-                      </div>
-                      <p className="order-item-desc">{item.description}</p>
-
-                      <div className="order-item-actions">
-                        {qty === 0 ? (
-                          <button
-                            className="btn-add-item"
-                            onClick={() => addToCart(item)}
-                          >
-                            <Plus size={14} /> Add to Order
-                          </button>
-                        ) : (
-                          <div className="qty-controls">
-                            <button onClick={() => removeFromCart(item.id)} className="qty-btn">
-                              <Minus size={14} />
-                            </button>
-                            <span className="qty-val">{qty}</span>
-                            <button onClick={() => addToCart(item)} className="qty-btn">
-                              <Plus size={14} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Sticky Bottom Cart Bar */}
-            {totalItemsCount > 0 && (
-              <div className="cart-sticky-bar animate-fade-in">
-                <div className="cart-summary-text">
-                  <div className="cart-count-badge">
-                    <ShoppingBag size={16} />
-                    <span>{totalItemsCount} {totalItemsCount === 1 ? 'item' : 'items'}</span>
-                  </div>
-                  <span className="cart-total-price">Total: ₹{totalAmount}</span>
+              <div className="order-receipt-card">
+                <h4>Receipt Summary</h4>
+                <ul>
+                  {lastOrderDetails?.items.map((item) => (
+                    <li key={item.id}>
+                      <span>{item.quantity}x {item.name}</span>
+                      <strong>₹{item.numericPrice * item.quantity}</strong>
+                    </li>
+                  ))}
+                </ul>
+                <div className="receipt-total">
+                  <span>Total Bill Amount:</span>
+                  <strong>₹{lastOrderDetails?.total}</strong>
                 </div>
-
-                <button className="btn btn-accent btn-place-order" onClick={handlePlaceOrder}>
-                  SEND ORDER TO KITCHEN →
-                </button>
               </div>
-            )}
-          </>
-        )}
-      </main>
+
+              <div className="status-live-pill">
+                <Sparkles size={16} className="sparkle-icon" />
+                <span>Kitchen Status: <strong>PENDING ACCEPTANCE</strong></span>
+              </div>
+
+              <button
+                className="btn btn-primary full-width margin-top-20"
+                onClick={() => setOrderSubmitted(false)}
+              >
+                ADD MORE ITEMS
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Search Bar */}
+              <div className="mobile-search-box">
+                <Search size={16} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search coffee, juices, sourdough toasts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              {/* Category Filter Pills */}
+              <div className="mobile-category-bar">
+                {menuCategories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    className={`mobile-cat-pill ${activeCategory === cat.id ? 'active' : ''}`}
+                    onClick={() => setActiveCategory(cat.id)}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+
+              {/* Items Cards */}
+              <div className="mobile-menu-list">
+                {filteredItems.length === 0 ? (
+                  <div className="mobile-empty-search">
+                    <p>No menu items match "{searchQuery}"</p>
+                  </div>
+                ) : (
+                  filteredItems.map((item) => {
+                    const qty = getItemQuantity(item.id);
+                    return (
+                      <div key={item.id} className="mobile-item-card">
+                        <div className="mobile-item-thumb">
+                          <img src={item.image} alt={item.name} className="img-cover" />
+                        </div>
+
+                        <div className="mobile-item-info">
+                          <div className="mobile-item-top">
+                            <h3 className="mobile-item-title">{item.name}</h3>
+                            <span className="mobile-item-price">{item.price}</span>
+                          </div>
+                          <p className="mobile-item-desc">{item.description}</p>
+
+                          <div className="mobile-item-footer">
+                            {qty === 0 ? (
+                              <button
+                                className="btn-add-touch"
+                                onClick={() => addToCart(item)}
+                              >
+                                <Plus size={14} /> Add
+                              </button>
+                            ) : (
+                              <div className="mobile-qty-stepper">
+                                <button onClick={() => removeFromCart(item.id)} className="stepper-btn">
+                                  <Minus size={14} />
+                                </button>
+                                <span className="stepper-val">{qty}</span>
+                                <button onClick={() => addToCart(item)} className="stepper-btn">
+                                  <Plus size={14} />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Sticky Mobile Cart Bar */}
+              {totalItemsCount > 0 && (
+                <div className="mobile-sticky-cart animate-fade-in">
+                  <div className="mobile-cart-left">
+                    <div className="cart-icon-wrapper">
+                      <ShoppingBag size={18} />
+                      <span className="cart-badge-num">{totalItemsCount}</span>
+                    </div>
+                    <span className="cart-price-sum">₹{totalAmount}</span>
+                  </div>
+
+                  <button className="mobile-send-order-btn" onClick={handlePlaceOrder}>
+                    SEND ORDER TO KITCHEN →
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 };

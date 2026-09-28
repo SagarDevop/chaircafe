@@ -60,6 +60,7 @@ const Admin = () => {
   const [tables, setTables] = useState(initialTables);
   const [selectedQRTable, setSelectedQRTable] = useState(initialTables[6]);
   const [newTableName, setNewTableName] = useState('');
+  const [customHost, setCustomHost] = useState(window.location.origin);
 
   // Load orders from localStorage + default samples
   useEffect(() => {
@@ -266,10 +267,22 @@ const Admin = () => {
                     <h3>{selectedQRTable.name} QR Code</h3>
                   </div>
 
+                  {/* Host Domain Config for Mobile Phone Scans */}
+                  <div className="qr-domain-config">
+                    <label>Target Domain / Local IP:</label>
+                    <input
+                      type="text"
+                      value={customHost}
+                      onChange={(e) => setCustomHost(e.target.value)}
+                      placeholder="http://192.168.1.5:5173 or https://fourchairs.com"
+                    />
+                    <small>Set your local network IP or domain so phone QR scans open the menu!</small>
+                  </div>
+
                   {/* Generated QR Code Graphic */}
                   <div className="qr-image-wrapper">
                     <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(window.location.origin + '/order?table=' + selectedQRTable.name.replace('Table ', ''))}`}
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(customHost + '/order?table=' + selectedQRTable.name.replace('Table ', ''))}`}
                       alt={`${selectedQRTable.name} QR Code`}
                       className="qr-img"
                     />
@@ -277,8 +290,8 @@ const Admin = () => {
                   </div>
 
                   <div className="qr-target-url">
-                    <span className="url-label">TARGET DINE-IN URL:</span>
-                    <code className="url-code">/order?table={selectedQRTable.name.replace('Table ', '')}</code>
+                    <span className="url-label">ENCODED QR URL:</span>
+                    <code className="url-code">{customHost}/order?table={selectedQRTable.name.replace('Table ', '')}</code>
                   </div>
 
                   <div className="qr-actions">
@@ -287,14 +300,14 @@ const Admin = () => {
                       className="btn btn-primary full-width"
                       target="_blank"
                     >
-                      TEST DINE-IN ORDERING FLOW →
+                      OPEN DIGITAL MENU NOW →
                     </Link>
 
                     <button
                       className="btn btn-outline full-width"
                       onClick={() => window.print()}
                     >
-                      <Printer size={14} /> PRINT QR ACRYLIC STAND
+                      <Printer size={14} /> PRINT QR STAND FOR TABLE
                     </button>
                   </div>
                 </div>

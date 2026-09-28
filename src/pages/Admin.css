@@ -348,6 +348,37 @@
   margin-bottom: 24px;
 }
 
+.qr-domain-config {
+  width: 100%;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.qr-domain-config label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.qr-domain-config input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-cream);
+}
+
+.qr-domain-config small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
 .qr-card-header h3 {
   font-family: var(--font-serif);
   font-size: 26px;
