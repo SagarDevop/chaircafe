@@ -89,9 +89,7 @@ const Order = () => {
               <span>TABLE {tableParam.toString().padStart(2, '0')}</span>
             </div>
 
-            <Link to="/admin" className="mobile-staff-btn">
-              Staff
-            </Link>
+            <div className="header-spacer"></div>
           </div>
         </header>
 
@@ -221,7 +219,7 @@ const Order = () => {
                   </div>
 
                   <button className="mobile-send-order-btn" onClick={handlePlaceOrder}>
-                    SEND ORDER TO KITCHEN →
+                    SEND ORDER →
                   </button>
                 </div>
               )}
